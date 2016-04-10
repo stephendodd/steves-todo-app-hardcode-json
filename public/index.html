@@ -12,26 +12,29 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/0.3.5/marked.min.js"></script>
   </head>
   <body>
+    <h3>Todo App</h3>
     <div id="app"></div>
     <!-- <script type="text/babel" src="scripts/example.js"></script>-->
     <script type="text/babel">
       // To get started with this tutorial running your own code, simply remove
       // the script tag loading scripts/example.js and start writing code here.
 
-
       //Create TodoItemTable
 
-      var TodoItemTable = React.createClass({
+      var TodoItemTableList = React.createClass({
         render: function() {
           var rows = [];
+
+          //loop through each item and create a TodoItemTableRow component with each item.
           this.props.items.forEach(function(item) {
-            rows.push(<TodoItemTableRow item={item} key={item} />);
+            rows.push(<TodoItemTableRow item={item} key={item.id} />);
           }.bind(this));
           return (
             <table>
               <thead>
                 <tr>
-                  <th>Item</th>
+                  <th>Id</th>
+                  <th>Todo Task</th>
                 </tr>
               </thead>
               <tbody>
@@ -43,13 +46,16 @@
       });
 
       //Create TodoItemTableRow
-
+      //TodoItemTableRow is a row with id and todoTask columns
       var TodoItemTableRow = React.createClass({
         render: function() {
           return (
             <tr>
               <td>
-                {this.props.item}
+                {this.props.item.id}
+              </td>
+              <td>
+                {this.props.item.todoTask}
               </td>
             </tr>
           );
@@ -57,19 +63,21 @@
       });
 
       //Create item input text box
-
+      //Function to handle the input boxes' text changing
       var ItemInput = React.createClass({
         handleInputChange: function() {
           this.props.onUserInput(
             this.refs.inputText.value
           )
         },
+        //Function to handle the form being submitted
         handleSubmit: function(e) {
           e.preventDefault();
           this.props.onUserSubmit(
             this.refs.inputText.value
           )
         },
+        //Method to render the input form
         render: function() {
           return (
             <form className="itemInputForm" onSubmit={this.handleSubmit}>
@@ -87,7 +95,6 @@
       });
 
       //Create TodoAppComponent
-
       var TodoApp = React.createClass({
         getInitialState: function() {
           return {
@@ -103,14 +110,19 @@
         },
 
         handleUserSubmit: function(item) {
-          var newItem = item;
-          console.log(newItem);
-          this.props.items.push(newItem);
-          this.setState({
-            items:this.props.items,
-            inputText:""
-          });
+          if (item.trim() != "")
+          {
+            this.props.items.push({
+              "id": this.props.items.length + 1,
+              "todoTask": item
+            });
+            this.setState({
+              items:this.props.items,
+              inputText:""
+            });
+          }
         },
+        //Todo component comprises of an ItemInput and a TodoItemTableList component
         render: function() {
           return (
             <div>
@@ -120,7 +132,7 @@
                 onUserSubmit={this.handleUserSubmit}
                 items={this.state.items}
               />
-              <TodoItemTable
+              <TodoItemTableList
                 items={this.state.items}
               />
             </div>
@@ -128,10 +140,12 @@
         }
       });
 
-      //Define the array of todo items
-
-      var ITEMS = ["apple","ham","carrot"];
-      //console.log(ITEMS);
+      //Define the JSON array of todo items
+      var ITEMS = [
+        {id:1,todoTask:"Take dog for a walk"},
+        {id:2,todoTask:"Eat spam"},
+        {id:3,todoTask:"Watch a film"}
+      ];
 
       ReactDOM.render(
         <TodoApp items={ITEMS}/>,
