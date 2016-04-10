@@ -18,11 +18,80 @@
       // To get started with this tutorial running your own code, simply remove
       // the script tag loading scripts/example.js and start writing code here.
 
-      React.render(
-        React.DOM.h1(null,"hello world"),
+
+      //Create TodoItemTable
+
+      var TodoItemTable = React.createClass({
+        render: function() {
+          var rows = [];
+          this.props.items.forEach(function(item) {
+            rows.push(<TodoItemTableRow item={item} key={item} />);
+          }.bind(this));
+          return (
+            <table>
+              <thead>
+                <tr>
+                  <th>Item</th>
+                </tr>
+              </thead>
+              <tbody>
+                {rows}
+              </tbody>
+            </table>
+          );
+        }
+      });
+
+      //Create TodoItemTableRow
+
+      var TodoItemTableRow = React.createClass({
+        render: function() {
+          return (
+            <tr>
+              <td>
+                {this.props.item}
+              </td>
+            </tr>
+          );
+        }
+      });
+
+      //Create item input text box
+
+      var ItemInput = React.createClass({
+        render: function() {
+          return (
+            <form>
+              <input type="text" placeholder="Add item here..." value="" />
+            </form>
+          );
+        }
+      });
+
+      //Create TodoAppComponent
+
+      var TodoApp = React.createClass({
+        render: function() {
+          return (
+            <div>
+              <ItemInput />
+              <TodoItemTable
+                items={this.props.items}
+              />
+            </div>
+          );
+        }
+      });
+
+      //Define the array of todo items
+
+      var ITEMS = ["apple","ham","carrot"];
+      console.log(ITEMS);
+
+      ReactDOM.render(
+        <TodoApp items={ITEMS}/>,
         document.getElementById("app")
       );
-
 
     </script>
   </body>
