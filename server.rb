@@ -20,19 +20,19 @@ puts "Server started: http://localhost:#{port}/"
 root = File.expand_path './public'
 server = WEBrick::HTTPServer.new Port: port, DocumentRoot: root
 
-server.mount_proc '/api/comments' do |req, res|
-  comments = JSON.parse(File.read('./comments.json', encoding: 'UTF-8'))
+server.mount_proc '/api/todoItems' do |req, res|
+  todoItems = JSON.parse(File.read('./todoItems.json', encoding: 'UTF-8'))
 
   if req.request_method == 'POST'
     # Assume it's well formed
-    comment = { id: (Time.now.to_f * 1000).to_i }
+    todoItem = { id: (Time.now.to_f * 1000).to_i }
     req.query.each do |key, value|
-      comment[key] = value.force_encoding('UTF-8') unless key == 'id'
+      todoItem[key] = value.force_encoding('UTF-8') unless key == 'id'
     end
-    comments << comment
+    todoItems << todoItem
     File.write(
-      './comments.json',
-      JSON.pretty_generate(comments, indent: '    '),
+      './todoItems.json',
+      JSON.pretty_generate(todoItems, indent: '    '),
       encoding: 'UTF-8'
     )
   end
@@ -41,7 +41,7 @@ server.mount_proc '/api/comments' do |req, res|
   res['Content-Type'] = 'application/json'
   res['Cache-Control'] = 'no-cache'
   res['Access-Control-Allow-Origin'] = '*'
-  res.body = JSON.generate(comments)
+  res.body = JSON.generate(todoItems)
 end
 
 trap('INT') { server.shutdown }

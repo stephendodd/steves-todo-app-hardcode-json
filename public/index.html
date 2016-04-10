@@ -24,17 +24,18 @@
       var TodoItemTableList = React.createClass({
         render: function() {
           var rows = [];
-
+          var i = 1;
           //loop through each item and create a TodoItemTableRow component with each item.
           this.props.items.forEach(function(item) {
-            rows.push(<TodoItemTableRow item={item} key={item.id} />);
+            rows.push(<TodoItemTableRow item={item} i={i} key={item.id} />);
+            i++
           }.bind(this));
           return (
             <table>
               <thead>
                 <tr>
-                  <th>Id</th>
-                  <th>Todo Task</th>
+                  <th>Item no</th>
+                  <th>Todo task</th>
                 </tr>
               </thead>
               <tbody>
@@ -52,7 +53,7 @@
           return (
             <tr>
               <td>
-                {this.props.item.id}
+                {this.props.i}
               </td>
               <td>
                 {this.props.item.todoTask}
@@ -68,13 +69,14 @@
         handleInputChange: function() {
           this.props.onUserInput(
             this.refs.inputText.value
-          )
+          );
         },
         //Function to handle the form being submitted
         handleSubmit: function(e) {
           e.preventDefault();
           this.props.onUserSubmit(
-            this.refs.inputText.value
+
+            {todoTask: this.refs.inputText.value}
           )
         },
         //Method to render the input form
@@ -96,11 +98,26 @@
 
       //Create TodoAppComponent
       var TodoApp = React.createClass({
-        getInitialState: function() {
-          return {
-            inputText: "",
-            items: this.props.items
-          };
+
+        loadCommentsFromServer: function() {
+          $.ajax({
+            url: this.props.url,
+            dataType: "json",
+            cache: false,
+            success: function(data) {
+              this.setState({
+                items: data
+              });
+            }.bind(this),
+            error: function(xhr, status, err) {
+              console.error(this.props.url, status, err.toString());
+            }.bind(this)
+          });
+        },
+
+        componentDidMount: function() {
+          this.loadCommentsFromServer();
+          setInterval(this.loadCommentsFromServer,2000);
         },
 
         handleUserInput: function(inputText) {
@@ -110,17 +127,50 @@
         },
 
         handleUserSubmit: function(item) {
-          if (item.trim() != "")
+          if (item.todoTask.trim() != "")
           {
+            var items = this.state.items;
+            item.id = this.state.items.length + 1;
+            var newItems = items.concat([item]);
+            /*
             this.props.items.push({
-              "id": this.props.items.length + 1,
+              //"id": this.props.items.length + 1,
+              "id": 3,
               "todoTask": item
-            });
+            });*/
+
             this.setState({
-              items:this.props.items,
+              items:newItems,
               inputText:""
             });
+
+            $.ajax({
+              url: this.props.url,
+              dataType: "json",
+              type: "POST",
+              data: item,
+              success: function(data) {
+                this.setState({
+                  items:data
+                });
+              }.bind(this),
+              error: function(xhr, status, err) {
+                this.setState({
+                  items: items
+                });
+                console.error(this.props.url, status, err.toString());
+              }.bind(this)
+            });
+
           }
+        },
+
+        getInitialState: function() {
+          return {
+            inputText: "",
+            //items: this.props.items=>1
+            items: []
+          };
         },
         //Todo component comprises of an ItemInput and a TodoItemTableList component
         render: function() {
@@ -140,15 +190,8 @@
         }
       });
 
-      //Define the JSON array of todo items
-      var ITEMS = [
-        {id:1,todoTask:"Take dog for a walk"},
-        {id:2,todoTask:"Eat spam"},
-        {id:3,todoTask:"Watch a film"}
-      ];
-
       ReactDOM.render(
-        <TodoApp items={ITEMS}/>,
+        <TodoApp url="/api/todoItems" pollInterval={2000}/>,
         document.getElementById("app")
       );
 
