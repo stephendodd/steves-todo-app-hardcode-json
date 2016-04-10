@@ -59,10 +59,28 @@
       //Create item input text box
 
       var ItemInput = React.createClass({
+        handleInputChange: function() {
+          this.props.onUserInput(
+            this.refs.inputText.value
+          )
+        },
+        handleSubmit: function(e) {
+          e.preventDefault();
+          this.props.onUserSubmit(
+            this.refs.inputText.value
+          )
+        },
         render: function() {
           return (
-            <form>
-              <input type="text" placeholder="Add item here..." value="" />
+            <form className="itemInputForm" onSubmit={this.handleSubmit}>
+              <input
+                type="text"
+                placeholder="Add item here..."
+                value={this.props.inputText}
+                ref="inputText"
+                onChange={this.handleInputChange}
+              />
+              <input type="submit" value="Add item" />
             </form>
           );
         }
@@ -71,12 +89,39 @@
       //Create TodoAppComponent
 
       var TodoApp = React.createClass({
+        getInitialState: function() {
+          return {
+            inputText: "",
+            items: this.props.items
+          };
+        },
+
+        handleUserInput: function(inputText) {
+          this.setState({
+            inputText:inputText
+          });
+        },
+
+        handleUserSubmit: function(item) {
+          var newItem = item;
+          console.log(newItem);
+          this.props.items.push(newItem);
+          this.setState({
+            items:this.props.items,
+            inputText:""
+          });
+        },
         render: function() {
           return (
             <div>
-              <ItemInput />
+              <ItemInput
+                inputText={this.state.inputText}
+                onUserInput={this.handleUserInput}
+                onUserSubmit={this.handleUserSubmit}
+                items={this.state.items}
+              />
               <TodoItemTable
-                items={this.props.items}
+                items={this.state.items}
               />
             </div>
           );
@@ -86,7 +131,7 @@
       //Define the array of todo items
 
       var ITEMS = ["apple","ham","carrot"];
-      console.log(ITEMS);
+      //console.log(ITEMS);
 
       ReactDOM.render(
         <TodoApp items={ITEMS}/>,
