@@ -41,6 +41,7 @@
                 <tr>
                   <th>Item no</th>
                   <th>Todo task</th>
+                  <th>Completed</th>
                 </tr>
               </thead>
               <tbody>
@@ -59,6 +60,20 @@
             this.props.deleteRowItem(this.props.item.id);
         },
 
+        getInitialState: function() {
+          return {
+            isChecked: this.props.item.completed
+          };
+        },
+
+        onChange: function() {
+          this.props.item.completed = !this.state.isChecked;
+          this.setState({
+            isChecked: this.props.item.completed
+          });
+
+        },
+
         render: function() {
           return (
             <tr>
@@ -67,6 +82,9 @@
               </td>
               <td>
                 {this.props.item.todoTask}
+              </td>
+              <td>
+                <input type="checkbox" checked={this.state.isChecked} onChange={this.onChange}/>
               </td>
               <td>
                 <input type="button" className="removeBtn" value="Remove" onClick={this.deleteRowItem}/>
@@ -110,6 +128,39 @@
       });
 
       //Create TodoAppComponent
+
+      var CompletedItemRow = React.createClass({
+        render: function() {
+          return (
+            <div>
+                {this.props.item.todoTask}
+            </div>
+          );
+        }
+      });
+
+      var CompletedItemTableList = React.createClass({
+        render: function() {
+
+          var completedItems = [];
+          var i = 1;
+
+          this.props.items.forEach(function(item) {
+            if (item.completed === true) {
+              completedItems.push(<CompletedItemRow item={item} key={item.id}/>);
+            }
+          }.bind(this));
+          console.log(completedItems);
+
+          return (
+            <div>
+            <h3>Completed items</h3>
+            {completedItems}
+            </div>
+          );
+        }
+      });
+
       var TodoApp = React.createClass({
 
         componentDidMount: function() {
@@ -175,28 +226,20 @@
                 items={this.state.items}
                 deleteRowItem={this.deleteRowItem}
               />
+
+              <CompletedItemTableList
+                items={this.state.items}
+              />
             </div>
           );
         }
       });
 
       var TODOS = [
-          {
-              "id": 1,
-              "todoTask": "Take dog for a walk"
-          },
-          {
-              "id": 2,
-              "todoTask": "Eat spam"
-          },
-          {
-              "id": 3,
-              "todoTask": "Watch a film"
-          },
-          {
-              "id": 1460283280435,
-              "todoTask": "fsdf"
-          }
+          {"id": 1,"todoTask": "Take dog for a walk", "completed": false},
+          {"id": 2,"todoTask": "Eat spam", "completed": true},
+          {"id": 3,"todoTask": "Watch a film", "completed": false},
+          {"id": 1460283280435,"todoTask": "fsdf", "completed":true}
       ];
 
       ReactDOM.render(
