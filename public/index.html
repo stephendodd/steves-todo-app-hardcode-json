@@ -22,12 +22,17 @@
       //Create TodoItemTable
 
       var TodoItemTableList = React.createClass({
+
+        deleteRowItem: function(itemId) {
+          this.props.deleteRowItem(itemId);
+        },
+
         render: function() {
           var rows = [];
           var i = 1;
           //loop through each item and create a TodoItemTableRow component with each item.
           this.props.items.forEach(function(item) {
-            rows.push(<TodoItemTableRow item={item} i={i} key={item.id} />);
+            rows.push(<TodoItemTableRow item={item} i={i} key={item.id} deleteRowItem={this.deleteRowItem}/>);
             i++
           }.bind(this));
           return (
@@ -49,6 +54,11 @@
       //Create TodoItemTableRow
       //TodoItemTableRow is a row with id and todoTask columns
       var TodoItemTableRow = React.createClass({
+
+        deleteRowItem: function() {
+            this.props.deleteRowItem(this.props.item.id);
+        },
+
         render: function() {
           return (
             <tr>
@@ -57,6 +67,9 @@
               </td>
               <td>
                 {this.props.item.todoTask}
+              </td>
+              <td>
+                <input type="button" className="removeBtn" value="Remove" onClick={this.deleteRowItem}/>
               </td>
             </tr>
           );
@@ -99,25 +112,9 @@
       //Create TodoAppComponent
       var TodoApp = React.createClass({
 
-        loadCommentsFromServer: function() {
-          $.ajax({
-            url: this.props.url,
-            dataType: "json",
-            cache: false,
-            success: function(data) {
-              this.setState({
-                items: data
-              });
-            }.bind(this),
-            error: function(xhr, status, err) {
-              console.error(this.props.url, status, err.toString());
-            }.bind(this)
-          });
-        },
-
         componentDidMount: function() {
-          this.loadCommentsFromServer();
-          setInterval(this.loadCommentsFromServer,2000);
+          //this.loadCommentsFromServer();
+          //setInterval(this.loadCommentsFromServer,2000);
         },
 
         handleUserInput: function(inputText) {
@@ -132,44 +129,36 @@
             var items = this.state.items;
             item.id = this.state.items.length + 1;
             var newItems = items.concat([item]);
-            /*
-            this.props.items.push({
-              //"id": this.props.items.length + 1,
-              "id": 3,
-              "todoTask": item
-            });*/
 
             this.setState({
               items:newItems,
               inputText:""
             });
 
-            $.ajax({
-              url: this.props.url,
-              dataType: "json",
-              type: "POST",
-              data: item,
-              success: function(data) {
-                this.setState({
-                  items:data
-                });
-              }.bind(this),
-              error: function(xhr, status, err) {
-                this.setState({
-                  items: items
-                });
-                console.error(this.props.url, status, err.toString());
-              }.bind(this)
-            });
-
           }
+        },
+
+        deleteRowItem: function(itemId) {
+          //Delete the todo item
+          var index= -1;
+          var todoItemLength = this.state.items.length;
+          for (var i = 0; i < todoItemLength; i++) {
+            if (this.state.items[i].id === itemId) {
+              index = i;
+              break;
+            }
+          }
+          this.state.items.splice(index,1);
+          this.setState({
+            items:this.state.items
+          });
         },
 
         getInitialState: function() {
           return {
             inputText: "",
             //items: this.props.items=>1
-            items: []
+            items: this.props.items
           };
         },
         //Todo component comprises of an ItemInput and a TodoItemTableList component
@@ -184,14 +173,34 @@
               />
               <TodoItemTableList
                 items={this.state.items}
+                deleteRowItem={this.deleteRowItem}
               />
             </div>
           );
         }
       });
 
+      var TODOS = [
+          {
+              "id": 1,
+              "todoTask": "Take dog for a walk"
+          },
+          {
+              "id": 2,
+              "todoTask": "Eat spam"
+          },
+          {
+              "id": 3,
+              "todoTask": "Watch a film"
+          },
+          {
+              "id": 1460283280435,
+              "todoTask": "fsdf"
+          }
+      ];
+
       ReactDOM.render(
-        <TodoApp url="/api/todoItems" pollInterval={2000}/>,
+        <TodoApp items={TODOS}/>,
         document.getElementById("app")
       );
 
