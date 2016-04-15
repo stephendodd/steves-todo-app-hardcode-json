@@ -32,7 +32,7 @@
           var i = 1;
           //loop through each item and create a TodoItemTableRow component with each item.
           this.props.items.forEach(function(item) {
-            rows.push(<TodoItemTableRow item={item} i={i} key={item.id} deleteRowItem={this.deleteRowItem}/>);
+            rows.push(<TodoItemTableRow item={item} i={i} key={i} deleteRowItem={this.deleteRowItem} updateCompletedItems={this.props.updateCompletedItems}/>);
             i++
           }.bind(this));
           return (
@@ -60,17 +60,17 @@
             this.props.deleteRowItem(this.props.item.id);
         },
 
-        getInitialState: function() {
+        /*getInitialState: function() {
           return {
             isChecked: this.props.item.completed
           };
-        },
+        },*/
 
         onChange: function() {
-          this.props.item.completed = !this.state.isChecked;
-          this.setState({
-            isChecked: this.props.item.completed
-          });
+          console.log("clicked");
+          console.log(this.props.item.id);
+          this.props.updateCompletedItems(this.props.item.id);
+          //this.props.item.completed = !this.props.item.completed
 
         },
 
@@ -84,7 +84,7 @@
                 {this.props.item.todoTask}
               </td>
               <td>
-                <input type="checkbox" checked={this.state.isChecked} onChange={this.onChange}/>
+                <input type="checkbox" checked={this.props.item.completed} onChange={this.onChange}/>
               </td>
               <td>
                 <input type="button" className="removeBtn" value="Remove" onClick={this.deleteRowItem}/>
@@ -141,29 +141,21 @@
 
       var CompletedItemTableList = React.createClass({
 
-        getInitialState: function() {
-          return {
-            completedItems: []
-          };
-        },
         render: function() {
 
-
           var i = 1;
+          var completedItemRows=[];
 
-          this.props.items.forEach(function(item) {
-            if (item.completed === true) {
-              this.state.completedItems.push(<CompletedItemRow item={item} key={item.id}/>);
-            }
+          this.props.completedItems.forEach(function(item) {
+              completedItemRows.push(<CompletedItemRow item={item} key={i}/>);
+              i++;
           }.bind(this));
-          console.log(this.state.completedItems);
-
-
+          //console.log(this.state.completedItems);
 
           return (
             <div>
             <h3>Completed items</h3>
-            {this.state.completedItems}
+            {completedItemRows}
             </div>
           );
         }
@@ -208,10 +200,66 @@
           });
         },
 
+        updateCompletedItems: function(itemId){
+          var itemIndex = -1;
+          itemIndex = this.getItemIndex(itemId);
+          var completedItemIndex = -1;
+
+          this.state.items[itemIndex].completed = !this.state.items[itemIndex].completed;
+          if (this.state.items[itemIndex].completed === true) {
+              this.state.completedItems.push(this.state.items[itemIndex]);
+          } else {
+            completedItemIndex = this.getCompletedItemIndex(this.state.items[itemIndex].id);
+            console.log("completedItemIndex =" + completedItemIndex);
+            this.state.completedItems.splice(completedItemIndex,1);
+            this.setState({
+              completedItems:this.state.completedItems
+            });
+          }
+
+          this.setState({
+            completedItems: this.state.completedItems
+          });
+
+        },
+
+        getItemIndex: function(itemId) {
+          //console.log("spam");
+          var i = 0;
+          var index = -1;
+          this.state.items.forEach(function(item) {
+            //console.log("item.id=" + item.id + "itemId =" + itemId);
+            if (item.id == itemId) {
+              //console.log("true");
+              //console.log("i=" + i);
+              index = i
+            }
+            i++;
+          }.bind(this));
+          return index;
+        },
+
+        getCompletedItemIndex: function(itemId) {
+          //console.log("spam");
+          var i = 0;
+          var index = -1;
+          this.state.completedItems.forEach(function(item) {
+            //console.log("item.id=" + item.id + "itemId =" + itemId);
+            if (item.id == itemId) {
+              //console.log("true");
+              //console.log("i=" + i);
+              index = i
+            }
+            i++;
+          }.bind(this));
+          return index;
+        },
+
         getInitialState: function() {
           return {
             inputText: "",
-            items: this.props.items
+            items: this.props.items,
+            completedItems: []
           };
         },
         //Todo component comprises of an ItemInput and a TodoItemTableList component
@@ -227,11 +275,13 @@
               <TodoItemTableList
                 items={this.state.items}
                 deleteRowItem={this.deleteRowItem}
+                updateCompletedItems={this.updateCompletedItems}
               />
 
               <CompletedItemTableList
-                items={this.state.items}
+                completedItems={this.state.completedItems}
               />
+
             </div>
           );
         }
@@ -239,15 +289,19 @@
 
       var TODOS = [
           {"id": 1,"todoTask": "Take dog for a walk", "completed": false},
-          {"id": 2,"todoTask": "Eat spam", "completed": true},
+          {"id": 2,"todoTask": "Eat spam", "completed": false},
           {"id": 3,"todoTask": "Watch a film", "completed": false},
-          {"id": 1460283280435,"todoTask": "fsdf", "completed":true}
+          {"id": 1460283280435,"todoTask": "fsdf", "completed":false}
       ];
 
       ReactDOM.render(
         <TodoApp items={TODOS}/>,
         document.getElementById("app")
       );
+
+      /*<textarea>
+        {JSON.stringify(this.state)}
+      </textarea>*/
 
     </script>
   </body>
