@@ -140,33 +140,36 @@
       });
 
       var CompletedItemTableList = React.createClass({
+
+        getInitialState: function() {
+          return {
+            completedItems: []
+          };
+        },
         render: function() {
 
-          var completedItems = [];
+
           var i = 1;
 
           this.props.items.forEach(function(item) {
             if (item.completed === true) {
-              completedItems.push(<CompletedItemRow item={item} key={item.id}/>);
+              this.state.completedItems.push(<CompletedItemRow item={item} key={item.id}/>);
             }
           }.bind(this));
-          console.log(completedItems);
+          console.log(this.state.completedItems);
+
+
 
           return (
             <div>
             <h3>Completed items</h3>
-            {completedItems}
+            {this.state.completedItems}
             </div>
           );
         }
       });
 
       var TodoApp = React.createClass({
-
-        componentDidMount: function() {
-          //this.loadCommentsFromServer();
-          //setInterval(this.loadCommentsFromServer,2000);
-        },
 
         handleUserInput: function(inputText) {
           this.setState({
@@ -208,7 +211,6 @@
         getInitialState: function() {
           return {
             inputText: "",
-            //items: this.props.items=>1
             items: this.props.items
           };
         },
