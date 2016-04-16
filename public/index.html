@@ -13,7 +13,7 @@
   </head>
   <body>
     <h3>Todo App</h3>
-    <div id="app"></div>
+    <div id="todoListApp"></div>
     <!-- <script type="text/babel" src="scripts/example.js"></script>-->
     <script type="text/babel">
       // To get started with this tutorial running your own code, simply remove
@@ -32,15 +32,21 @@
           var i = 1;
           //loop through each item and create a TodoItemTableRow component with each item.
           this.props.items.forEach(function(item) {
-            rows.push(<TodoItemTableRow item={item} i={i} key={item.id} deleteRowItem={this.deleteRowItem}/>);
+            rows.push(<TodoItemTableRow item={item} i={i} key={i} deleteRowItem={this.deleteRowItem} updateCompletedItems={this.props.updateCompletedItems}/>);
             i++
           }.bind(this));
+
+          /*rows =this.props.items.map(function(item){
+            return <TodoItemTableRow item={item} i={item} key={i} deleteRowItem={this.deleteRowItem} updateCompletedItems={this.props.updateCompletedItems}/>;
+          }.bind(this));*/
+
           return (
             <table>
               <thead>
                 <tr>
-                  <th>Item no</th>
+                  <th>Item No</th>
                   <th>Todo task</th>
+                  <th>Completed</th>
                 </tr>
               </thead>
               <tbody>
@@ -59,6 +65,10 @@
             this.props.deleteRowItem(this.props.item.id);
         },
 
+        onChange: function() {
+          this.props.updateCompletedItems(this.props.item.id);
+        },
+
         render: function() {
           return (
             <tr>
@@ -67,6 +77,9 @@
               </td>
               <td>
                 {this.props.item.todoTask}
+              </td>
+              <td>
+                <input type="checkbox" checked={this.props.item.completed} onChange={this.onChange}/>
               </td>
               <td>
                 <input type="button" className="removeBtn" value="Remove" onClick={this.deleteRowItem}/>
@@ -110,12 +123,52 @@
       });
 
       //Create TodoAppComponent
-      var TodoApp = React.createClass({
+      var CompletedItemRow = React.createClass({
+        render: function() {
+          return (
+            <tr>
+              <td>
+                {this.props.item.todoTask}
+              </td>
+            </tr>
+          );
+        }
+      });
 
-        componentDidMount: function() {
-          //this.loadCommentsFromServer();
-          //setInterval(this.loadCommentsFromServer,2000);
-        },
+      var CompletedItemTableList = React.createClass({
+
+        render: function() {
+
+          var i = 1;
+          var completedItemRows=[];
+
+          this.props.completedItems.forEach(function(item) {
+              completedItemRows.push(<CompletedItemRow item={item} key={i}/>);
+              i++;
+          }.bind(this));
+          //console.log(this.state.completedItems);
+
+          return (
+            <div>
+            <h3>Completed items</h3>
+
+            <table>
+              <thead>
+                <tr>
+                  <th>Todo task</th>
+                </tr>
+              </thead>
+              <tbody>
+                {completedItemRows}
+              </tbody>
+            </table>
+
+            </div>
+          );
+        }
+      });
+
+      var TodoApp = React.createClass({
 
         handleUserInput: function(inputText) {
           this.setState({
@@ -123,13 +176,14 @@
           });
         },
 
-        handleUserSubmit: function(item) {
+        addItem: function(item) {
           if (item.todoTask.trim() != "")
           {
             var items = this.state.items;
             item.id = this.state.items.length + 1;
+            item.completed = false;
             var newItems = items.concat([item]);
-
+            console.log(newItems);
             this.setState({
               items:newItems,
               inputText:""
@@ -139,26 +193,51 @@
         },
 
         deleteRowItem: function(itemId) {
-          //Delete the todo item
-          var index= -1;
-          var todoItemLength = this.state.items.length;
-          for (var i = 0; i < todoItemLength; i++) {
-            if (this.state.items[i].id === itemId) {
-              index = i;
-              break;
-            }
-          }
-          this.state.items.splice(index,1);
+
+          var itemIndex = this.getItemIndex(itemId);
+          this.state.items.splice(itemIndex,1);
+
           this.setState({
             items:this.state.items
           });
         },
 
+        updateCompletedItems: function(itemId){
+          var itemIndex = this.getItemIndex(itemId);
+          var completedItemIndex = -1;
+
+          this.state.items[itemIndex].completed = !this.state.items[itemIndex].completed;
+          if (this.state.items[itemIndex].completed === true) {
+              this.state.completedItems.push(this.state.items[itemIndex]);
+          } else {
+            completedItemIndex = this.getCompletedItemIndex(this.state.items[itemIndex].id);
+            this.state.completedItems.splice(completedItemIndex,1);
+          }
+
+          this.setState({
+            completedItems: this.state.completedItems
+          });
+        },
+
+        getItemIndex: function(itemId) {
+          var index = this.state.items.map(function(item) {
+            return item.id;
+          }).indexOf(itemId);
+          return index;
+        },
+
+        getCompletedItemIndex: function(itemId) {
+          var index = this.state.completedItems.map(function(item) {
+            return item.id;
+          }).indexOf(itemId);
+          return index;
+        },
+
         getInitialState: function() {
           return {
             inputText: "",
-            //items: this.props.items=>1
-            items: this.props.items
+            items: this.props.items,
+            completedItems: []
           };
         },
         //Todo component comprises of an ItemInput and a TodoItemTableList component
@@ -168,12 +247,16 @@
               <ItemInput
                 inputText={this.state.inputText}
                 onUserInput={this.handleUserInput}
-                onUserSubmit={this.handleUserSubmit}
+                onUserSubmit={this.addItem}
                 items={this.state.items}
               />
               <TodoItemTableList
                 items={this.state.items}
                 deleteRowItem={this.deleteRowItem}
+                updateCompletedItems={this.updateCompletedItems}
+              />
+              <CompletedItemTableList
+                completedItems={this.state.completedItems}
               />
             </div>
           );
@@ -181,27 +264,15 @@
       });
 
       var TODOS = [
-          {
-              "id": 1,
-              "todoTask": "Take dog for a walk"
-          },
-          {
-              "id": 2,
-              "todoTask": "Eat spam"
-          },
-          {
-              "id": 3,
-              "todoTask": "Watch a film"
-          },
-          {
-              "id": 1460283280435,
-              "todoTask": "fsdf"
-          }
+          {"id": 1,"todoTask": "Take dog for a walk", "completed": false},
+          {"id": 2,"todoTask": "Eat spam", "completed": false},
+          {"id": 3,"todoTask": "Watch a film", "completed": false},
+          {"id": 4,"todoTask": "Climb trees", "completed":false}
       ];
 
       ReactDOM.render(
         <TodoApp items={TODOS}/>,
-        document.getElementById("app")
+        document.getElementById("todoListApp")
       );
 
     </script>
