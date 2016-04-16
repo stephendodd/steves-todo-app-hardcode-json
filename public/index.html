@@ -13,7 +13,7 @@
   </head>
   <body>
     <h3>Todo App</h3>
-    <div id="app"></div>
+    <div id="todoListApp"></div>
     <!-- <script type="text/babel" src="scripts/example.js"></script>-->
     <script type="text/babel">
       // To get started with this tutorial running your own code, simply remove
@@ -35,11 +35,16 @@
             rows.push(<TodoItemTableRow item={item} i={i} key={i} deleteRowItem={this.deleteRowItem} updateCompletedItems={this.props.updateCompletedItems}/>);
             i++
           }.bind(this));
+
+          /*rows =this.props.items.map(function(item){
+            return <TodoItemTableRow item={item} i={item} key={i} deleteRowItem={this.deleteRowItem} updateCompletedItems={this.props.updateCompletedItems}/>;
+          }.bind(this));*/
+
           return (
             <table>
               <thead>
                 <tr>
-                  <th>Item no</th>
+                  <th>Item No</th>
                   <th>Todo task</th>
                   <th>Completed</th>
                 </tr>
@@ -60,18 +65,8 @@
             this.props.deleteRowItem(this.props.item.id);
         },
 
-        /*getInitialState: function() {
-          return {
-            isChecked: this.props.item.completed
-          };
-        },*/
-
         onChange: function() {
-          console.log("clicked");
-          console.log(this.props.item.id);
           this.props.updateCompletedItems(this.props.item.id);
-          //this.props.item.completed = !this.props.item.completed
-
         },
 
         render: function() {
@@ -128,13 +123,14 @@
       });
 
       //Create TodoAppComponent
-
       var CompletedItemRow = React.createClass({
         render: function() {
           return (
-            <div>
+            <tr>
+              <td>
                 {this.props.item.todoTask}
-            </div>
+              </td>
+            </tr>
           );
         }
       });
@@ -155,7 +151,18 @@
           return (
             <div>
             <h3>Completed items</h3>
-            {completedItemRows}
+
+            <table>
+              <thead>
+                <tr>
+                  <th>Todo task</th>
+                </tr>
+              </thead>
+              <tbody>
+                {completedItemRows}
+              </tbody>
+            </table>
+
             </div>
           );
         }
@@ -169,13 +176,14 @@
           });
         },
 
-        handleUserSubmit: function(item) {
+        addItem: function(item) {
           if (item.todoTask.trim() != "")
           {
             var items = this.state.items;
             item.id = this.state.items.length + 1;
+            item.completed = false;
             var newItems = items.concat([item]);
-
+            console.log(newItems);
             this.setState({
               items:newItems,
               inputText:""
@@ -185,24 +193,17 @@
         },
 
         deleteRowItem: function(itemId) {
-          //Delete the todo item
-          var index= -1;
-          var todoItemLength = this.state.items.length;
-          for (var i = 0; i < todoItemLength; i++) {
-            if (this.state.items[i].id === itemId) {
-              index = i;
-              break;
-            }
-          }
-          this.state.items.splice(index,1);
+
+          var itemIndex = this.getItemIndex(itemId);
+          this.state.items.splice(itemIndex,1);
+
           this.setState({
             items:this.state.items
           });
         },
 
         updateCompletedItems: function(itemId){
-          var itemIndex = -1;
-          itemIndex = this.getItemIndex(itemId);
+          var itemIndex = this.getItemIndex(itemId);
           var completedItemIndex = -1;
 
           this.state.items[itemIndex].completed = !this.state.items[itemIndex].completed;
@@ -210,48 +211,25 @@
               this.state.completedItems.push(this.state.items[itemIndex]);
           } else {
             completedItemIndex = this.getCompletedItemIndex(this.state.items[itemIndex].id);
-            console.log("completedItemIndex =" + completedItemIndex);
             this.state.completedItems.splice(completedItemIndex,1);
-            this.setState({
-              completedItems:this.state.completedItems
-            });
           }
 
           this.setState({
             completedItems: this.state.completedItems
           });
-
         },
 
         getItemIndex: function(itemId) {
-          //console.log("spam");
-          var i = 0;
-          var index = -1;
-          this.state.items.forEach(function(item) {
-            //console.log("item.id=" + item.id + "itemId =" + itemId);
-            if (item.id == itemId) {
-              //console.log("true");
-              //console.log("i=" + i);
-              index = i
-            }
-            i++;
-          }.bind(this));
+          var index = this.state.items.map(function(item) {
+            return item.id;
+          }).indexOf(itemId);
           return index;
         },
 
         getCompletedItemIndex: function(itemId) {
-          //console.log("spam");
-          var i = 0;
-          var index = -1;
-          this.state.completedItems.forEach(function(item) {
-            //console.log("item.id=" + item.id + "itemId =" + itemId);
-            if (item.id == itemId) {
-              //console.log("true");
-              //console.log("i=" + i);
-              index = i
-            }
-            i++;
-          }.bind(this));
+          var index = this.state.completedItems.map(function(item) {
+            return item.id;
+          }).indexOf(itemId);
           return index;
         },
 
@@ -269,7 +247,7 @@
               <ItemInput
                 inputText={this.state.inputText}
                 onUserInput={this.handleUserInput}
-                onUserSubmit={this.handleUserSubmit}
+                onUserSubmit={this.addItem}
                 items={this.state.items}
               />
               <TodoItemTableList
@@ -277,11 +255,9 @@
                 deleteRowItem={this.deleteRowItem}
                 updateCompletedItems={this.updateCompletedItems}
               />
-
               <CompletedItemTableList
                 completedItems={this.state.completedItems}
               />
-
             </div>
           );
         }
@@ -291,17 +267,13 @@
           {"id": 1,"todoTask": "Take dog for a walk", "completed": false},
           {"id": 2,"todoTask": "Eat spam", "completed": false},
           {"id": 3,"todoTask": "Watch a film", "completed": false},
-          {"id": 1460283280435,"todoTask": "fsdf", "completed":false}
+          {"id": 4,"todoTask": "Climb trees", "completed":false}
       ];
 
       ReactDOM.render(
         <TodoApp items={TODOS}/>,
-        document.getElementById("app")
+        document.getElementById("todoListApp")
       );
-
-      /*<textarea>
-        {JSON.stringify(this.state)}
-      </textarea>*/
 
     </script>
   </body>
