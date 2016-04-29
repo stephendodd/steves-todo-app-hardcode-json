@@ -29,10 +29,9 @@
 
         render: function() {
           var rows = [];
-          var newRows = [];
           //loop through each item and create a TodoItemTableRow component with each item.
 
-          newRows =this.props.items.map(function(item, i){
+          rows =this.props.items.map(function(item, i){
             return <TodoItemTableRow item={item} i={i} key={i} deleteRowItem={this.deleteRowItem} updateCompletedItems={this.props.updateCompletedItems}/>;
           }.bind(this));
           return (
@@ -45,7 +44,7 @@
                 </tr>
               </thead>
               <tbody>
-                {newRows}
+                {rows}
               </tbody>
             </table>
           );
@@ -57,7 +56,7 @@
       var TodoItemTableRow = React.createClass({
 
         deleteRowItem: function() {
-            this.props.deleteRowItem(this.props.item.id);
+          this.props.deleteRowItem(this.props.item.id);
         },
 
         onChange: function() {
@@ -138,7 +137,7 @@
 
           completedItemRows = this.props.completedItems.map(function(item, i) {
             return <CompletedItemRow item={item} key={i}/>;
-          });
+          }.bind(this));
 
           return (
             <div>
@@ -172,13 +171,17 @@
           if (item.todoTask.trim() != "")
           {
             var items = this.state.items;
-            item.id = this.state.items.length + 1;
+            //item.id = new Date().getUTCMilliseconds()
+            item.id = (new Date()).getTime();
+            //item.id = this.state.items.length + 1;
+            console.log("item id:", item.id);
             item.completed = false;
             var newItems = items.concat([item]);
             this.setState({
               items:newItems,
               inputText:""
             });
+
 
           }
         },
@@ -207,6 +210,7 @@
 
           this.setState({
             completedItems: this.state.completedItems
+
           });
         },
 
@@ -254,12 +258,14 @@
         }
       });
 
-      var TODOS = [
+      /*var TODOS = [
           {"id": 1,"todoTask": "Take dog for a walk", "completed": false},
           {"id": 2,"todoTask": "Eat spam", "completed": false},
           {"id": 3,"todoTask": "Watch a film", "completed": false},
           {"id": 4,"todoTask": "Climb trees", "completed":false}
-      ];
+      ];*/
+
+      var TODOS = [];
 
       ReactDOM.render(
         <TodoApp items={TODOS}/>,
