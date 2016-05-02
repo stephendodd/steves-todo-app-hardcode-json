@@ -29,17 +29,11 @@
 
         render: function() {
           var rows = [];
-          var i = 1;
           //loop through each item and create a TodoItemTableRow component with each item.
-          this.props.items.forEach(function(item) {
-            rows.push(<TodoItemTableRow item={item} i={i} key={i} deleteRowItem={this.deleteRowItem} updateCompletedItems={this.props.updateCompletedItems}/>);
-            i++
+
+          rows =this.props.items.map(function(item, i){
+            return <TodoItemTableRow item={item} i={i} key={i} deleteRowItem={this.deleteRowItem} updateCompletedItems={this.props.updateCompletedItems}/>;
           }.bind(this));
-
-          /*rows =this.props.items.map(function(item){
-            return <TodoItemTableRow item={item} i={item} key={i} deleteRowItem={this.deleteRowItem} updateCompletedItems={this.props.updateCompletedItems}/>;
-          }.bind(this));*/
-
           return (
             <table>
               <thead>
@@ -62,7 +56,7 @@
       var TodoItemTableRow = React.createClass({
 
         deleteRowItem: function() {
-            this.props.deleteRowItem(this.props.item.id);
+          this.props.deleteRowItem(this.props.item.id);
         },
 
         onChange: function() {
@@ -139,14 +133,11 @@
 
         render: function() {
 
-          var i = 1;
           var completedItemRows=[];
 
-          this.props.completedItems.forEach(function(item) {
-              completedItemRows.push(<CompletedItemRow item={item} key={i}/>);
-              i++;
+          completedItemRows = this.props.completedItems.map(function(item, i) {
+            return <CompletedItemRow item={item} key={i}/>;
           }.bind(this));
-          //console.log(this.state.completedItems);
 
           return (
             <div>
@@ -180,14 +171,17 @@
           if (item.todoTask.trim() != "")
           {
             var items = this.state.items;
-            item.id = this.state.items.length + 1;
+            //item.id = new Date().getUTCMilliseconds()
+            item.id = (new Date()).getTime();
+            //item.id = this.state.items.length + 1;
+            console.log("item id:", item.id);
             item.completed = false;
             var newItems = items.concat([item]);
-            console.log(newItems);
             this.setState({
               items:newItems,
               inputText:""
             });
+
 
           }
         },
@@ -216,6 +210,7 @@
 
           this.setState({
             completedItems: this.state.completedItems
+
           });
         },
 
@@ -263,12 +258,14 @@
         }
       });
 
-      var TODOS = [
+      /*var TODOS = [
           {"id": 1,"todoTask": "Take dog for a walk", "completed": false},
           {"id": 2,"todoTask": "Eat spam", "completed": false},
           {"id": 3,"todoTask": "Watch a film", "completed": false},
           {"id": 4,"todoTask": "Climb trees", "completed":false}
-      ];
+      ];*/
+
+      var TODOS = [];
 
       ReactDOM.render(
         <TodoApp items={TODOS}/>,
