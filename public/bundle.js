@@ -53,65 +53,12 @@
 
 	'use strict';
 
-	// To get started with this tutorial running your own code, simply remove
-	// the script tag loading scripts/example.js and start writing code here.
-
-	//Create TodoItemTable
 	var React = __webpack_require__(2);
 	var ReactDOM = __webpack_require__(159);
 
 	var TodoApp = __webpack_require__(160);
 
-	//Create item input text box
-	//Function to handle the input boxes' text changing
-
 	//Create TodoAppComponent
-
-	var CompletedItemTableList = React.createClass({
-	  displayName: 'CompletedItemTableList',
-
-
-	  render: function render() {
-
-	    var completedItemRows = [];
-
-	    completedItemRows = this.props.completedItems.map(function (item, i) {
-	      return React.createElement(CompletedItemRow, { item: item, key: i });
-	    }.bind(this));
-
-	    return React.createElement(
-	      'div',
-	      null,
-	      React.createElement(
-	        'h3',
-	        null,
-	        'Completed items'
-	      ),
-	      React.createElement(
-	        'table',
-	        null,
-	        React.createElement(
-	          'thead',
-	          null,
-	          React.createElement(
-	            'tr',
-	            null,
-	            React.createElement(
-	              'th',
-	              null,
-	              'Todo task'
-	            )
-	          )
-	        ),
-	        React.createElement(
-	          'tbody',
-	          null,
-	          completedItemRows
-	        )
-	      )
-	    );
-	  }
-	});
 
 	/*var TODOS = [
 	    {"id": 1,"todoTask": "Take dog for a walk", "completed": false},
@@ -19794,8 +19741,6 @@
 	var CompletedItemTableList = __webpack_require__(161);
 	var TodoItemTableList = __webpack_require__(163);
 	var ItemInput = __webpack_require__(165);
-	//Create TodoItemTableRow
-	//TodoItemTableRow is a row with id and todoTask columns
 
 	var TodoApp = React.createClass({
 	  displayName: 'TodoApp',
@@ -19964,9 +19909,6 @@
 
 	var React = __webpack_require__(2);
 	var ReactDOM = __webpack_require__(159);
-
-	//Create TodoItemTableRow
-	//TodoItemTableRow is a row with id and todoTask columns
 
 	var CompletedItemRow = React.createClass({
 	  displayName: 'CompletedItemRow',

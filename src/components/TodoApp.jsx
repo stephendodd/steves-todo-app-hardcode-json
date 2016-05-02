@@ -4,8 +4,7 @@ var ReactDOM = require('react-dom');
 var CompletedItemTableList = require('./CompletedItemTableList.jsx')
 var TodoItemTableList= require('./TodoItemTableList.jsx')
 var ItemInput = require('./ItemInput.jsx')
-//Create TodoItemTableRow
-//TodoItemTableRow is a row with id and todoTask columns
+
 
 var TodoApp = React.createClass({
 
@@ -27,8 +26,6 @@ var TodoApp = React.createClass({
         items:newItems,
         inputText:""
       });
-
-
     }
   },
 
@@ -42,7 +39,7 @@ var TodoApp = React.createClass({
     });
   },
 
-  updateCompletedItems: function(itemId){
+  updateCompletedItems: function(itemId) {
     var itemIndex = this.getItemIndex(itemId);
     var completedItemIndex = -1;
 
