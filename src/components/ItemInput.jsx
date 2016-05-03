@@ -1,9 +1,6 @@
 var React = require('react');
 var ReactDOM = require('react-dom');
 
-//Create TodoItemTableRow
-//TodoItemTableRow is a row with id and todoTask columns
-
 var ItemInput = React.createClass({
   handleInputChange: function() {
     this.props.onUserInput(

@@ -3,6 +3,8 @@ var ReactDOM = require('react-dom');
 
 var TodoApp = require('./components/TodoApp.jsx')
 
+console.log("test");
+
 //Create TodoAppComponent
 
 /*var TODOS = [

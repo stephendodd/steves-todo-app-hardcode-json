@@ -3,7 +3,7 @@ var webpack = require('webpack');
 
 module.exports = {
   entry: [
-    path.resolve('src')+'/app.jsx',
+    path.resolve('src/app.jsx'),
   ],
   output: {
     path: path.resolve('public'),

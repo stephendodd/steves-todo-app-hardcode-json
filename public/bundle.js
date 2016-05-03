@@ -58,6 +58,8 @@
 
 	var TodoApp = __webpack_require__(160);
 
+	console.log("test");
+
 	//Create TodoAppComponent
 
 	/*var TODOS = [
