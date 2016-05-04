@@ -1,13 +1,12 @@
 {
-  "name": "React Tutorial Server",
-  "description": "Code from the React tutorial",
-  "keywords": [ "react", "reactjs", "tutorial" ],
-  "repository": "https://github.com/reactjs/react-tutorial",
+  "name": "Steves TodoApp",
+  "description": "A Todo App written in React JS that will grow in complexity over time",
+  "keywords": [ "react", "reactjs", "tutorial", "todoapp" ],
+  "repository": "https://github.com/stephendodd/steves-todo-app-hardcode-json",
   "logo": "https://facebook.github.io/react/img/logo.svg",
-  "website": "http://facebook.github.io/react/docs/tutorial.html",
+  "website": "https://github.com/stephendodd",
   "success_url": "/",
   "env" : {
     "BUILDPACK_URL": "https://github.com/heroku/heroku-buildpack-nodejs.git"
   }
 }
-
