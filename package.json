@@ -1,7 +1,7 @@
 {
-  "name": "react-tutorial",
+  "name": "Steves Todo App",
   "version": "0.0.0",
-  "description": "Code from the React tutorial.",
+  "description": "A Todo App written in React JS that will grow in complexity over time",
   "main": "server.js",
   "dependencies": {
     "body-parser": "^1.4.3",
@@ -25,7 +25,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/reactjs/react-tutorial.git"
+    "url": "https://github.com/stephendodd/steves-todo-app-hardcode-json.git"
   },
   "keywords": [
     "react",
@@ -35,9 +35,9 @@
   ],
   "author": "Stephen Dodd",
   "bugs": {
-    "url": "https://github.com/reactjs/react-tutorial/issues"
+    "url": "https://github.com/stephendodd"
   },
-  "homepage": "https://github.com/reactjs/react-tutorial",
+  "homepage": "https://github.com/stephendodd/steves-todo-app-hardcode-json",
   "engines": {
     "node": "0.12.x"
   }
