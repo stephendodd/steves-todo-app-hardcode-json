@@ -1,55 +1,47 @@
-[![Deploy](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy)
+#Steves Todo App Readme
 
-# React Tutorial
+URL: https://github.com/stephendodd/steves-todo-app-hardcode-json
+Repo: https://github.com/stephendodd/steves-todo-app-hardcode-json.git
 
-This is the React comment box example from [the React tutorial](http://facebook.github.io/react/docs/tutorial.html).
+This is a todoApp that is written in React JS with a Ruby back-end. It will grow in complexity over time.
 
 ## To use
 
-There are several simple server implementations included. They all serve static files from `public/` and handle requests to `/api/comments` to fetch or add data. Start a server with one of the following:
+### Cloning the Todo App repo
 
-### Node
+* Clone the git repo by running ```git clone https://github.com/stephendodd/steves-todo-app-hardcode-json.git```
 
-```sh
-npm install
-node server.js
-```
+### Install required dependencies
 
-### Python
+* React run ```npm install react```
+* React Dom run ```npm install react-dom```
+* Babel loader run ```npm install babel-loader babel-core babel-preset-es2015 babel-preset-react --save-dev```
+* Webpack run ```npm install webpack```
 
-```sh
-pip install -r requirements.txt
-python server.py
-```
+### Generate node modules folder with webpack
 
-### Ruby
-```sh
-ruby server.rb
-```
+In the pulled git directory run the command ```./node_modules/.bin/webpack``` to use webpack to generate the bundle.js File.
 
-### PHP
-```sh
-php server.php
-```
+### Start the ruby server
 
-### Go
-```sh
-go run server.go
-```
+Start the ruby server by running the command ```ruby server.rb```. This will create a local server run on port 3000 unless otherwise specified.
 
-### Perl
+### Open up the app in the browser
 
-```sh
-cpan Mojolicious
-perl server.pl
-```
+Navigate to ```http://localhost:3000``` to see the todo app in action.
 
-And visit <http://localhost:3000/>. Try opening multiple tabs!
-
-## Changing the port
+Changing the port
 
 You can change the port number by setting the `$PORT` environment variable before invoking any of the scripts above, e.g.,
 
 ```sh
-PORT=3001 node server.js
+PORT=3001 ruby server.rb
 ```
+
+## Funtionality
+
+Below is a list of the Todo App's functions.
+
+* Add todo items
+* Remove todo items
+* View completed todo items

@@ -18,10 +18,6 @@ module.exports = {
         query: {
           presets: ['react', 'es2015']
         }
-      },
-      {
-        test: /\.sass$/,
-        loader: "style!css!sass?indentedSyntax"
       }
     ]
   },
