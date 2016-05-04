@@ -19852,8 +19852,6 @@
 	var ReactDOM = __webpack_require__(159);
 
 	var CompletedItemRow = __webpack_require__(162);
-	//Create TodoItemTableRow
-	//TodoItemTableRow is a row with id and todoTask columns
 
 	var CompletedItemTableList = React.createClass({
 	  displayName: 'CompletedItemTableList',
@@ -20055,9 +20053,6 @@
 
 	var React = __webpack_require__(2);
 	var ReactDOM = __webpack_require__(159);
-
-	//Create TodoItemTableRow
-	//TodoItemTableRow is a row with id and todoTask columns
 
 	var ItemInput = React.createClass({
 	  displayName: 'ItemInput',
