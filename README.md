@@ -7,9 +7,11 @@ This is a todoApp that is written in React JS with a Ruby back-end. It will grow
 
 ## To use
 
-###Pull the git repo from the "Repo" link above
+### Cloning the Todo App repo
 
-###Install required dependencies
+* Clone the git repo by running ```git clone https://github.com/stephendodd/steves-todo-app-hardcode-json.git```
+
+### Install required dependencies
 
 * React run ```npm install react```
 * React Dom run ```npm install react-dom```
