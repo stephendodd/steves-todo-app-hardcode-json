@@ -3,13 +3,13 @@
 URL: https://github.com/stephendodd/steves-todo-app-hardcode-json
 Repo: https://github.com/stephendodd/steves-todo-app-hardcode-json.git
 
-This is the React comment box example from [the React tutorial](http://facebook.github.io/react/docs/tutorial.html).
+This is a todoApp that is written in React JS with a Ruby back-end. It will grow in complexity over time.
 
 ## To use
 
 Pull the git repo from the "Repo" link above
 
-Run the command ```./node_modules/.bin/webpack``` to use webpack to generate the bundle.js File
+In the pulled git directory run the command ```./node_modules/.bin/webpack``` to use webpack to generate the bundle.js File.
 
 Start the ruby server by running the command ```ruby server.rb```. This will create a local server run on port 3000 unless otherwise specified.
 
@@ -21,10 +21,18 @@ Navigate to ```http://localhost:3000``` to see the todo app in action.
 ruby server.rb
 ```
 
-## Changing the port
+### Changing the port
 
 You can change the port number by setting the `$PORT` environment variable before invoking any of the scripts above, e.g.,
 
 ```sh
 PORT=3001 ruby server.rb
 ```
+
+## Funtionality
+
+Below is a list of the Todo App's functions.
+
+* Add todo items
+* Remove todo items
+* View completed todo items
